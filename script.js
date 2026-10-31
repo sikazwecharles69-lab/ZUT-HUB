@@ -1,16 +1,40 @@
 const whatsappNumber = "260572205511";
 
-function createWhatsAppOrderLink(itemName) {
-    const message = `Hello ZUT Restaurant, I would like to order ${itemName}. Please confirm the price and availability.`;
+function createWhatsAppLink(message, linkText, ariaLabel) {
     const link = document.createElement("a");
     link.className = "whatsapp-order-link";
     link.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    link.textContent = "Order on WhatsApp";
-    link.setAttribute("aria-label", `Order ${itemName} on WhatsApp`);
+    link.textContent = linkText;
+    link.setAttribute("aria-label", ariaLabel);
     return link;
 }
+
+function createWhatsAppOrderLink(itemName) {
+    const message = `Hello ZUT Restaurant, I would like to order ${itemName}. Please confirm the price and availability.`;
+    return createWhatsAppLink(message, "Order on WhatsApp", `Order ${itemName} on WhatsApp`);
+}
+
+const serviceOrderMessages = {
+    takeaway: "Hello ZUT Restaurant, I would like to place a takeaway order. Please let me know how to order and when I can collect it.",
+    delivery: "Hello ZUT Restaurant, I would like to place a delivery order. Please share the delivery options and let me know what details you need."
+};
+
+document.querySelectorAll(".service-item").forEach(service => {
+    const serviceType = service.dataset.orderType;
+    const message = serviceOrderMessages[serviceType];
+    if (!message) {
+        throw new Error(`Missing WhatsApp order message for service: ${serviceType}`);
+    }
+
+    const serviceName = service.querySelector("h3").textContent.trim();
+    service.append(createWhatsAppLink(
+        message,
+        `Arrange ${serviceName}`,
+        `Arrange ${serviceName.toLowerCase()} on WhatsApp`
+    ));
+});
 
 document.querySelectorAll(".menu-item").forEach(item => {
     const itemName = item.querySelector("h4").textContent.trim();
@@ -21,7 +45,7 @@ document.querySelectorAll(".price-category table").forEach(table => {
     const headerRow = table.querySelector("thead tr");
     const orderHeader = document.createElement("th");
     orderHeader.scope = "col";
-    orderHeader.textContent = "Order";
+    orderHeader.textContent = "WhatsApp";
     headerRow.append(orderHeader);
 
     table.querySelectorAll("tbody tr").forEach(row => {

@@ -345,6 +345,7 @@ footer h2 {
 .price-category {
     margin: 1.5rem 0;
     padding: 1.5rem;
+    overflow-x: auto;
     border-top: 4px solid var(--blue);
     border-radius: 10px;
     background: var(--paper);
@@ -380,14 +381,19 @@ footer h2 {
     font-weight: 700;
 }
 
-.price-category th:last-child,
-.price-category td:last-child {
-    width: auto;
+.price-category th:nth-child(n + 3),
+.price-category td:nth-child(n + 3) {
     text-align: center;
 }
 
+.price-category th:last-child,
+.price-category td:last-child {
+    width: auto;
+}
+
 .price-category .whatsapp-order-link {
-    white-space: nowrap;
+    margin: .25rem;
+    white-space: normal;
 }
 
 .carousel-controls {
@@ -481,6 +487,115 @@ footer h2 {
 .service-item h3 {
     margin: 0;
     color: var(--blue);
+}
+
+.service-item .whatsapp-order-link {
+    margin-top: .5rem;
+}
+
+.order-page {
+    width: min(100% - 2rem, 720px);
+    margin: 0 auto;
+    padding: 3rem 0 4rem;
+}
+
+.order-intro {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.order-intro .eyebrow {
+    margin-bottom: .25rem;
+    color: var(--red);
+}
+
+.order-intro h1 {
+    margin: 0;
+    color: var(--black);
+    font-size: clamp(2.5rem, 6vw, 4rem);
+}
+
+.order-intro > p:last-child {
+    color: var(--muted);
+}
+
+.order-form {
+    display: grid;
+    gap: .75rem;
+    padding: clamp(1.25rem, 4vw, 2rem);
+    border-top: 4px solid var(--blue);
+    border-radius: 10px;
+    background: var(--paper);
+    box-shadow: 0 8px 24px rgb(17 24 39 / 8%);
+}
+
+.order-form label {
+    margin-top: .35rem;
+    color: var(--black);
+    font-weight: 700;
+}
+
+.order-form input,
+.order-form select,
+.order-form textarea {
+    width: 100%;
+    padding: .7rem .8rem;
+    border: 1px solid #cbd2dc;
+    border-radius: 6px;
+    color: var(--ink);
+    background: var(--paper);
+    font: inherit;
+}
+
+.order-form textarea {
+    resize: vertical;
+}
+
+.order-form input:focus-visible,
+.order-form select:focus-visible,
+.order-form textarea:focus-visible {
+    outline: 3px solid #77b8ff;
+    outline-offset: 2px;
+}
+
+.form-optional {
+    color: var(--muted);
+    font-size: .9rem;
+    font-weight: 400;
+}
+
+.order-submit {
+    justify-self: start;
+    border: 0;
+    color: var(--paper);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.order-notice {
+    margin: 1rem 0;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+}
+
+.order-notice-success {
+    color: #155b34;
+    background: #e6f5eb;
+}
+
+.order-notice-error {
+    color: #8e1c1c;
+    background: #fff0f0;
+}
+
+.order-notice p {
+    margin-top: 0;
+    font-weight: 700;
+}
+
+.order-notice ul {
+    margin-bottom: 0;
 }
 
 footer {
