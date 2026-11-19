@@ -18,8 +18,8 @@ function createWhatsAppOrderLink(itemName) {
 
 function createWebsiteOrderLink(itemName) {
     const link = document.createElement("a");
-    const orderUrl = new URL("order.php", document.baseURI);
-    orderUrl.searchParams.set("items", `${itemName} × 1`);
+    const orderUrl = new URL("order.html", document.baseURI);
+    orderUrl.searchParams.set("items", `${itemName} x 1`);
     link.className = "website-order-link";
     link.href = orderUrl;
     link.textContent = "Order on website";
