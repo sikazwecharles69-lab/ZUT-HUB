@@ -1,24 +1,7 @@
-const whatsappNumber = "260572205511";
-
-function createWhatsAppLink(message, linkText, ariaLabel) {
-    const link = document.createElement("a");
-    link.className = "whatsapp-order-link";
-    link.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = linkText;
-    link.setAttribute("aria-label", ariaLabel);
-    return link;
-}
-
-function createWhatsAppOrderLink(itemName) {
-    const message = `Hello ZUT Restaurant, I would like to order ${itemName}. Please confirm the price and availability.`;
-    return createWhatsAppLink(message, "Order on WhatsApp", `Order ${itemName} on WhatsApp`);
-}
-
 function createWebsiteOrderLink(itemName) {
     const link = document.createElement("a");
-    const orderUrl = new URL("order.html", document.baseURI);
+    const localPhpOrder = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+    const orderUrl = new URL(localPhpOrder ? "order.php" : "order.html", document.baseURI);
     orderUrl.searchParams.set("items", `${itemName} x 1`);
     link.className = "website-order-link";
     link.href = orderUrl;
@@ -27,50 +10,27 @@ function createWebsiteOrderLink(itemName) {
     return link;
 }
 
-const serviceOrderMessages = {
-    takeaway: "Hello ZUT Restaurant, I would like to place a takeaway order. Please let me know how to order and when I can collect it.",
-    delivery: "Hello ZUT Restaurant, I would like to place a delivery order. Please share the delivery options and let me know what details you need."
-};
-
-document.querySelectorAll(".service-item").forEach(service => {
-    const serviceType = service.dataset.orderType;
-    const message = serviceOrderMessages[serviceType];
-    if (!message) {
-        throw new Error(`Missing WhatsApp order message for service: ${serviceType}`);
-    }
-
-    const serviceName = service.querySelector("h3").textContent.trim();
-    service.append(createWhatsAppLink(
-        message,
-        `Arrange ${serviceName}`,
-        `Arrange ${serviceName.toLowerCase()} on WhatsApp`
-    ));
-});
+const localPhpOrder = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+if (localPhpOrder) {
+    document.querySelectorAll('a[href="order.html"]').forEach(link => {
+        link.href = new URL("order.php", document.baseURI).href;
+    });
+}
 
 document.querySelectorAll(".menu-item").forEach(item => {
     const itemName = item.querySelector("h4").textContent.trim();
     item.append(createWebsiteOrderLink(itemName));
-    item.append(createWhatsAppOrderLink(itemName));
 });
 
 document.querySelectorAll(".price-category table").forEach(table => {
     const headerRow = table.querySelector("thead tr");
-    const orderHeader = document.createElement("th");
-    orderHeader.scope = "col";
-    orderHeader.textContent = "WhatsApp";
-    headerRow.append(orderHeader);
-
     const websiteOrderHeader = document.createElement("th");
     websiteOrderHeader.scope = "col";
-    websiteOrderHeader.textContent = "Website";
+    websiteOrderHeader.textContent = "Order";
     headerRow.append(websiteOrderHeader);
 
     table.querySelectorAll("tbody tr").forEach(row => {
         const itemName = row.cells[0].textContent.trim();
-        const orderCell = document.createElement("td");
-        orderCell.append(createWhatsAppOrderLink(itemName));
-        row.append(orderCell);
-
         const websiteOrderCell = document.createElement("td");
         websiteOrderCell.append(createWebsiteOrderLink(itemName));
         row.append(websiteOrderCell);

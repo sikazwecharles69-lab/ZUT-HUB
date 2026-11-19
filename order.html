@@ -21,7 +21,7 @@
         <section class="order-intro">
             <p class="eyebrow">ZUT RESTAURANT</p>
             <h1>Place an Order</h1>
-            <p>Enter your details and WhatsApp will open with your order ready to send to the restaurant.</p>
+            <p>Enter your details to send your order directly to the restaurant.</p>
         </section>
 
         <form class="order-form" id="order-form">
@@ -49,8 +49,10 @@
             <label for="notes">Additional notes <span class="form-optional">(optional)</span></label>
             <textarea id="notes" name="notes" maxlength="1000" rows="3"></textarea>
 
-            <button class="button order-submit" type="submit">Continue to WhatsApp</button>
+            <button class="button order-submit" type="submit">Place Order</button>
         </form>
+
+        <p id="order-status" class="order-notice" role="status" aria-live="polite" hidden></p>
 
         <p class="prices-back"><a class="button" href="index.html#menu">Back to Food Menu</a></p>
     </main>
@@ -61,12 +63,13 @@
     </footer>
 
     <script>
-        const whatsappNumber = "260572205511";
         const orderForm = document.querySelector("#order-form");
         const orderType = document.querySelector("#order-type");
         const addressField = document.querySelector("#delivery-address");
         const addressContainer = addressField.closest(".delivery-address-field");
         const itemsField = document.querySelector("#items");
+        const statusMessage = document.querySelector("#order-status");
+        const submitButton = orderForm.querySelector("button[type=submit]");
 
         const selectedItems = new URLSearchParams(window.location.search).get("items");
         if (selectedItems) itemsField.value = selectedItems;
@@ -83,22 +86,32 @@
         orderForm.addEventListener("submit", event => {
             event.preventDefault();
             const data = new FormData(orderForm);
-            const messageLines = [
-                "Hello ZUT Restaurant, I would like to place this order.",
-                `Name: ${data.get("customer_name")}`,
-                `Phone: ${data.get("phone")}`,
-                `Order type: ${data.get("order_type")}`,
-                `Items: ${data.get("items")}`,
-            ];
+            statusMessage.hidden = false;
+            statusMessage.className = "order-notice";
+            statusMessage.textContent = "Sending your order…";
+            submitButton.disabled = true;
 
-            if (data.get("order_type") === "delivery") {
-                messageLines.push(`Delivery address: ${data.get("delivery_address")}`);
-            }
-            if (data.get("notes")) messageLines.push(`Notes: ${data.get("notes")}`);
-
-            const whatsappUrl = new URL(`https://wa.me/${whatsappNumber}`);
-            whatsappUrl.searchParams.set("text", messageLines.join("\n"));
-            window.location.assign(whatsappUrl);
+            fetch("/api/order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(Object.fromEntries(data.entries())),
+            })
+                .then(async response => {
+                    const result = await response.json().catch(() => ({}));
+                    if (!response.ok) throw new Error(result.error || "We could not send your order.");
+                    statusMessage.classList.add("order-notice-success");
+                    statusMessage.textContent = `Your order was sent to the restaurant. Reference: ${result.orderReference}.`;
+                    orderForm.reset();
+                    itemsField.value = "";
+                    updateDeliveryAddress();
+                })
+                .catch(error => {
+                    statusMessage.classList.add("order-notice-error");
+                    statusMessage.textContent = error.message || "We could not send your order. Please call the restaurant.";
+                })
+                .finally(() => {
+                    submitButton.disabled = false;
+                });
         });
     </script>
 </body>

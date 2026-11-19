@@ -21,9 +21,7 @@ function inputString(array $source, string $key, string $default = ""): string
 
 $errors = [];
 $successMessage = $_SESSION["order_success_message"] ?? "";
-$whatsappOrderUrl = $_SESSION["order_whatsapp_url"] ?? "";
 unset($_SESSION["order_success_message"]);
-unset($_SESSION["order_whatsapp_url"]);
 
 $form = [
     "customer_name" => "",
@@ -106,25 +104,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $statement->execute();
 
             $orderReference = (string) $conn->insert_id;
-            $messageLines = [
-                "Hello ZUT Restaurant, I would like to place this order.",
-                "Order reference: " . $orderReference,
-                "Name: " . $form["customer_name"],
-                "Phone: " . $form["phone"],
-                "Order type: " . ucfirst($form["order_type"]),
-                "Items: " . $form["items"],
-            ];
-            if ($form["delivery_address"] !== "") {
-                $messageLines[] = "Delivery address: " . $form["delivery_address"];
-            }
-            if ($form["notes"] !== "") {
-                $messageLines[] = "Notes: " . $form["notes"];
-            }
-
             $_SESSION["order_success_message"] =
                 "Your order was received. Your reference number is " . $orderReference . ".";
-            $_SESSION["order_whatsapp_url"] =
-                "https://wa.me/260572205511?text=" . rawurlencode(implode("\n", $messageLines));
             $_SESSION["order_csrf_token"] = bin2hex(random_bytes(32));
             header("Location: order.php");
             exit;
@@ -164,14 +145,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         <?php if ($successMessage !== ""): ?>
             <p class="order-notice order-notice-success" role="status"><?= escapeHtml($successMessage) ?></p>
-            <?php if ($whatsappOrderUrl !== ""): ?>
-                <p class="order-whatsapp-action">
-                    <a class="button" href="<?= escapeHtml($whatsappOrderUrl) ?>" target="_blank" rel="noopener noreferrer">
-                        Send order to WhatsApp
-                    </a>
-                </p>
-                <p>WhatsApp will open with your order ready to send to the restaurant.</p>
-            <?php endif; ?>
         <?php endif; ?>
 
         <?php if ($errors): ?>
