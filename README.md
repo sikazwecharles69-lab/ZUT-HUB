@@ -13,7 +13,7 @@ the PHP `mysqli` extension (for example, through XAMPP).
 4. Put the project folder under XAMPP's `htdocs` directory and open
    `http://localhost/<project-folder>/` in your browser.
 
-The PHP entry point serves the existing restaurant homepage. The order form
-(`order.php`) is not linked from the menu; existing WhatsApp order links remain
-available. The XAMPP `applications.html` dashboard page is not part of the
-restaurant site.
+The PHP entry point serves the existing restaurant homepage. “Order Now” links
+open the website order form, and each menu and price-list item can prefill that
+form. WhatsApp ordering links are also available. The XAMPP `applications.html`
+dashboard page is not part of the restaurant site.

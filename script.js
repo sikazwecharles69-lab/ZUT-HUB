@@ -16,6 +16,17 @@ function createWhatsAppOrderLink(itemName) {
     return createWhatsAppLink(message, "Order on WhatsApp", `Order ${itemName} on WhatsApp`);
 }
 
+function createWebsiteOrderLink(itemName) {
+    const link = document.createElement("a");
+    const orderUrl = new URL("order.php", document.baseURI);
+    orderUrl.searchParams.set("items", `${itemName} × 1`);
+    link.className = "website-order-link";
+    link.href = orderUrl;
+    link.textContent = "Order on website";
+    link.setAttribute("aria-label", `Order ${itemName} on the website`);
+    return link;
+}
+
 const serviceOrderMessages = {
     takeaway: "Hello ZUT Restaurant, I would like to place a takeaway order. Please let me know how to order and when I can collect it.",
     delivery: "Hello ZUT Restaurant, I would like to place a delivery order. Please share the delivery options and let me know what details you need."
@@ -38,6 +49,7 @@ document.querySelectorAll(".service-item").forEach(service => {
 
 document.querySelectorAll(".menu-item").forEach(item => {
     const itemName = item.querySelector("h4").textContent.trim();
+    item.append(createWebsiteOrderLink(itemName));
     item.append(createWhatsAppOrderLink(itemName));
 });
 
@@ -48,11 +60,20 @@ document.querySelectorAll(".price-category table").forEach(table => {
     orderHeader.textContent = "WhatsApp";
     headerRow.append(orderHeader);
 
+    const websiteOrderHeader = document.createElement("th");
+    websiteOrderHeader.scope = "col";
+    websiteOrderHeader.textContent = "Website";
+    headerRow.append(websiteOrderHeader);
+
     table.querySelectorAll("tbody tr").forEach(row => {
         const itemName = row.cells[0].textContent.trim();
         const orderCell = document.createElement("td");
         orderCell.append(createWhatsAppOrderLink(itemName));
         row.append(orderCell);
+
+        const websiteOrderCell = document.createElement("td");
+        websiteOrderCell.append(createWebsiteOrderLink(itemName));
+        row.append(websiteOrderCell);
     });
 });
 

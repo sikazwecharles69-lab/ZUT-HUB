@@ -288,7 +288,8 @@ footer h2 {
     font-weight: 700;
 }
 
-.whatsapp-order-link {
+.whatsapp-order-link,
+.website-order-link {
     display: inline-block;
     padding: .55rem .85rem;
     border-radius: 999px;
@@ -300,13 +301,24 @@ footer h2 {
     text-decoration: none;
 }
 
+.website-order-link {
+    background: var(--red);
+}
+
 .whatsapp-order-link:hover,
 .whatsapp-order-link:focus-visible {
     color: var(--paper);
     background: #0c703a;
 }
 
-.menu-item .whatsapp-order-link {
+.website-order-link:hover,
+.website-order-link:focus-visible {
+    color: var(--paper);
+    background: #a82323;
+}
+
+.menu-item .whatsapp-order-link,
+.menu-item .website-order-link {
     margin: 0 1rem 1rem;
 }
 
@@ -391,7 +403,8 @@ footer h2 {
     width: auto;
 }
 
-.price-category .whatsapp-order-link {
+.price-category .whatsapp-order-link,
+.price-category .website-order-link {
     margin: .25rem;
     white-space: normal;
 }
