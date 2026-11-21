@@ -5,8 +5,8 @@ function createWebsiteOrderLink(itemName) {
     orderUrl.searchParams.set("items", `${itemName} x 1`);
     link.className = "website-order-link";
     link.href = orderUrl;
-    link.textContent = "Order on website";
-    link.setAttribute("aria-label", `Order ${itemName} on the website`);
+    link.textContent = "Order Now";
+    link.setAttribute("aria-label", `Order ${itemName}`);
     return link;
 }
 
@@ -16,7 +16,6 @@ if (localPhpOrder) {
         link.href = new URL("order.php", document.baseURI).href;
     });
 }
-
 document.querySelectorAll(".menu-item").forEach(item => {
     const itemName = item.querySelector("h4").textContent.trim();
     item.append(createWebsiteOrderLink(itemName));
